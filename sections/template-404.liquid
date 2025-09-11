@@ -1,0 +1,26 @@
+<h1> {{ section.settings.title }} </h1>
+
+<p>{{ section.settings.subtext }}</p>
+
+
+
+{% schema %}
+    {
+        "name": "404 template",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Heading",
+                "default": "Page not found !"
+            },
+            {
+                "type": "textarea",
+                "id": "subtext",
+                "label": "Subtext",
+                "default": "The page you are looking for doesn't exist."
+            
+            }
+        ]
+    }
+{% endschema %}

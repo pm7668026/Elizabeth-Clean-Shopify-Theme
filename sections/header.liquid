@@ -1,6 +1,3 @@
-
-hello piyuhs bhai
-
 {% assign menu_links_vale = linklists[section.settings.main_menu].links %}
 
 <div class="relative bg-white" x-data="{ mobileMenuOpen: true }">
@@ -15,7 +12,7 @@ hello piyuhs bhai
       <div  class="-mr-2 -my-2 ml-3 md:hidden">
     <button x-on:click="mobileMenuOpen = true" type="button" class="bg-white p-2 inline-flex items-center justify-center focus:outline-none">
         {% render 'menu' %}
-    </button>
+    </button> 
 
 
 
@@ -200,13 +197,13 @@ hello piyuhs bhai
 </div>
 
 
-{{ "ghghgh" }}
 
-{% if customer %}
+
+{% comment %} {% if customer %}
   Welcome back, {{ customer.first_name }}!
 {% else %}
   <a href="{{ routes.account_login_url }}">Login</a>
-{% endif %}
+{% endif %} {% endcomment %}
 
 
 
