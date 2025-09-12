@@ -1,0 +1,86 @@
+{% for block in section.blocks %}
+  {% case block.type %}
+    {% when 'article_title' %}
+      <h1>{{ article.title }}</h1>
+
+    {% when 'article_author' %}
+      {% if section.settings.show_author %}
+        <small> {{ article.author }} </small><br>
+      {% endif %}
+
+    {% when 'article_date' %}
+      {% if section.settings.show_date %}
+        <time datetime="{{ article.published_at | date: "%Y-%m-%d" }}">
+          {{ article.published_at | date: '%B %d, %Y' }}
+        </time>
+      {% endif %}
+
+    {% when 'article_image' %}
+      {% if section.settings.show_image %}
+        {% comment %} <img src="{{ article.image | img_url: 'large' }}" alt="{{ article.image.alt }}"> {% endcomment %}
+
+        <img
+          src="{{ article.image | image_url: width: 800 }}"  alt="{{ article.image.alt | escape }}" width="800"  height="auto"
+        >
+      {% endif %}
+
+    {% when 'article_content' %}
+      <div>{{ article.content }}</div>
+
+    {% else %}
+
+  {% endcase %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "Article template",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": true,
+      "label": "Show author"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "Show date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "Show image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "article_title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "article_author",
+      "name": "Author",
+      "limit": 1
+    },
+    {
+      "type": "article_date",
+      "name": "Date",
+      "limit": 1
+    },
+    {
+      "type": "article_image",
+      "name": "Image",
+      "limit": 1
+    },
+    {
+      "type": "article_content",
+      "name": "Content",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}
