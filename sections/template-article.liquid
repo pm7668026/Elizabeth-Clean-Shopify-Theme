@@ -1,36 +1,68 @@
-{% for block in section.blocks %}
-  {% case block.type %}
-    {% when 'article_title' %}
-      <h1>{{ article.title }}</h1>
+<article class="article-template py-12">
+  {% for block in section.blocks %}
+    {% case block.type %}
+      {% when 'article_title' %}
+        <div class="flex item-center justify-center text-center flex-col">
+          <a href="{{ blog.url }}" class="text.uppercase.text text-gray-500 hover:text-grey-900 font-bold">
+            {{- blog.title -}}
+          </a>
 
-    {% when 'article_author' %}
-      {% if section.settings.show_author %}
-        <small> {{ article.author }} </small><br>
-      {% endif %}
+          <h1 class="text-4xl md:text-6xl font-medium">{{ article.title }}</h1>
+        </div>
 
-    {% when 'article_date' %}
-      {% if section.settings.show_date %}
-        <time datetime="{{ article.published_at | date: "%Y-%m-%d" }}">
-          {{ article.published_at | date: '%B %d, %Y' }}
-        </time>
-      {% endif %}
+      {% when 'article_author' %}
+        {% if section.settings.show_author %}
+          <div class="flex item-center justify-center text-center flex-col mt-2 mb-4">
+            <small> {{ article.author }} </small><br>
+          </div>
+        {% endif %}
 
-    {% when 'article_image' %}
-      {% if section.settings.show_image %}
-        {% comment %} <img src="{{ article.image | img_url: 'large' }}" alt="{{ article.image.alt }}"> {% endcomment %}
+      {% when 'article_date' %}
+        {% if section.settings.show_date %}
+          <div class="flex item-center justify-center text-center flex-col mt-2 mb-4">
+            <time datetime="{{ article.published_at | date: "%Y-%m-%d" }}">
+              {{ article.published_at | date: format: 'on_date' }}
+            </time>
+          </div>
+        {% endif %}
 
-        <img
-          src="{{ article.image | image_url: width: 800 }}"  alt="{{ article.image.alt | escape }}" width="800"  height="auto"
-        >
-      {% endif %}
+      {% when 'article_image' %}
+        {% if section.settings.show_image %}
+          {% comment %} <img src="{{ article.image | img_url: 'large' }}" alt="{{ article.image.alt }}"> {% endcomment %}
 
-    {% when 'article_content' %}
-      <div>{{ article.content }}</div>
+          <div class="flex item-center justify-center text-center mt-2 mb-4 max-w-7xl">
 
-    {% else %}
+            {% if article.image != blank %}
 
-  {% endcase %}
-{% endfor %}
+               <img
+              src="{{ article.image | image_url: width: 800 }}"
+              alt="{{ article.image.alt | escape }}"
+              width="800"
+              height="auto"
+            >
+
+            {% else %}
+
+            {% assign placeholder_image = 'lifestyle-1' %}
+
+            {{ placeholder_image | placeholder_svg_tag: 'w-full h-80 md:h-96 object-cover object-center p-5' }}
+              
+            {% endif %}
+           
+          </div>
+        {% endif %}
+
+      {% when 'article_content' %}
+
+        <div class="flex item-center justify-center">
+        <div class="max-w-4xl">{{ article.content }}</div>
+        </div>
+
+      {% else %}
+
+    {% endcase %}
+  {% endfor %}
+</article>
 
 {% schema %}
 {
