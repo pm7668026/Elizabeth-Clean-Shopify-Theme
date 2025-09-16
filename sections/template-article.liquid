@@ -1,4 +1,4 @@
-<article class="article-template py-12">
+<article class="article-template py-12" itemscope itemtype="http://schema.org/BlogPosting">
   {% for block in section.blocks %}
     {% case block.type %}
       {% when 'article_title' %}
@@ -7,20 +7,20 @@
             {{- blog.title -}}
           </a>
 
-          <h1 class="text-4xl md:text-6xl font-medium">{{ article.title }}</h1>
+          <h1 class="text-4xl md:text-6xl font-medium" itemprop="headline">{{ article.title }}</h1>
         </div>
 
       {% when 'article_author' %}
         {% if section.settings.show_author %}
-          <div class="flex item-center justify-center text-center flex-col mt-2 mb-4">
-            <small> {{ article.author }} </small><br>
+          <div class="flex item-center justify-center text-center flex-col mt-2 mb-4" itemscope itemtype="http://schema.org/Person">
+            <small itemprop="author"> {{ article.author }} </small><br>
           </div>
         {% endif %}
 
       {% when 'article_date' %}
         {% if section.settings.show_date %}
           <div class="flex item-center justify-center text-center flex-col mt-2 mb-4">
-            <time datetime="{{ article.published_at | date: "%Y-%m-%d" }}">
+            <time itemprop="datePublished dateCreated" datetime="{{ article.published_at | date: "%Y-%m-%d" }}">
               {{ article.published_at | date: format: 'on_date' }}
             </time>
           </div>
@@ -28,7 +28,7 @@
 
       {% when 'article_image' %}
         {% if section.settings.show_image %}
-          <div class="flex item-center justify-center text-center mt-2 mb-4 max-w-7xl">
+          <div class="flex item-center justify-center text-center mt-2 mb-4 max-w-7xl" itemprop="image">
             {% if article.image != blank %}
               <img
                 src="{{ article.image | image_url: width: 800 }}"
@@ -45,7 +45,7 @@
 
       {% when 'article_content' %}
         <div class="flex item-center justify-center">
-          <div class="max-w-4xl">{{ article.content }}</div>
+          <div itemprop="articleBody" class="max-w-4xl">{{ article.content }}</div>
         </div>
     {% endcase %}
   {% endfor %}
@@ -160,6 +160,48 @@
     {% endform %}
   </div>
 {% endif %}
+
+<script type="application/ld+json">
+
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": {{ article.title | json }},
+    "articleBody": {{ article.content | strip_html | json }},
+    {% if article.excerpt != blank %}
+
+      "description": {{ article.excerpt | strip_html | json }},
+      
+    {% endif %}
+
+    {% if article.image %}
+
+      "image": [
+        {{ article.image | img_url: 'medium' | prepend: 'https:' | json }}
+      ],
+      
+    {% endif %}
+
+    {% if article.author %}
+      "author": {
+        "@type": "Person",
+        "name": {{ article.author | json }}
+      },
+    {% endif %}
+
+    {% if article.published_at %}
+      "datePublished": "{{ article.published_at | date: "%Y-%m-%d" }}",
+    {% endif %}
+
+    {% if article.updated_at and article.updated_at != article.published_at %}
+      "dateModified": "{{ article.updated_at | date: "%Y-%m-%d" }}",
+      
+    {% endif %}
+  
+  }
+
+
+  </script>
 
 {% schema %}
 {
