@@ -70,11 +70,10 @@
             </div>
           {% endfor %}
 
-          {% if paginate.pages > 1 %}
-            <div class="mt-4">
-              {{ paginate | default_pagination: previous: 'Previous', next: 'Next' }}
-            </div>
-          {% endif %}
+          <div class="max-w-6xl mx-auto">
+            {% render 'pagination', pagination:paginate %}
+
+          </div>
         {% endpaginate %}
       </div>
     {% else %}

@@ -1,0 +1,29 @@
+{% if pagination.pages > 0 %}
+  {% comment %} <div class="mt-4">
+    {{ paginate | default_pagination: previous: 'Previous', next: 'Next' }}
+  </div> {% endcomment %}
+
+  <nav role="navigation" class="flex justify-center my-8">
+
+    {% if pagination.previous %}
+        
+        <a href="{{ pagination.previous.url }}" class="border border-grey-600 text-grey-600 hover:bg-grey-600 hover:text-red px-8 py-3 mx-1 rounded-sm font-medium ">{{ pagination.previous.title }}</a>
+    {% endif %}
+
+
+    {% for part in pagination.parts %}
+
+        {% if part.is_link %}
+            <a href="{{ part.url }}" class="border border-grey-600 text-grey-600 hover:bg-grey-600 hover:text-red px-8 py-3 mx-1 rounded-sm font-medium ">{{ part.title }}</a>
+        {% else %}
+            <span class="border border-grey-600 text-grey-600 bg-grey-600 px-8 py-3 mx-1 rounded-sm font-medium ">{{ part.title }}</span>
+        {% endif %}
+        
+    {% endfor %}
+
+    {% if pagination.next %}
+        
+        <a href="{{ pagination.next.url }}" class="border border-grey-600 text-grey-600 hover:bg-grey-600 hover:text-red px-8 py-3 mx-1 rounded-sm font-medium ">{{ pagination.next.title }}</a>
+    {% endif %}
+  </nav>
+{% endif %}
