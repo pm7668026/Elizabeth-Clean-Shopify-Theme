@@ -1,0 +1,171 @@
+{% if cart.item_count > 0 %}
+  <div class="p-4">
+    <div class="flex items-end justify-between my-5">
+      <h1 class="text-3xl">Your Cart</h1>
+      <a href="{{ routes.all_products_collection_url }}" class="text-blue-600 hover:underline font-medium"
+        >Continue Shopping</a
+      >
+    </div>
+
+    <div class="max-w-6xl flex flex-col my-10 mx-auto">
+      <form action="{{ routes.cart_url }}" method="post" novalidate>
+        <table>
+          <thead class="border-b">
+            <tr class="text-left">
+              <th class="pb-4">Product</th>
+              <th class="pb-4">Price</th>
+              <th class="pb-4">Quantity</th>
+              <th class="pb-4">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for item in cart.items %}
+              <tr class="border-b">
+                <td class="py-4 flex items-center space-x-4">
+                  <a href="{{ item.url }}">
+                    {% if item.image %}
+                      <img
+                        src="{{ item.image | img_url: 'small' }}"
+                        alt="{{ item.title }}"
+                        class="w-16 h-16 object-cover"
+                      >
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag: 'small' }}
+                    {% endif %}
+                  </a>
+
+                  <div>
+                    <a href="{{ item.url }}" class="font-medium hover:underline">{{ item.product.title }}</a>
+
+                    <a
+                      href="{{ routes.cart_change_url}}?line={{forloop.index}}&quantity=0"
+                      class="text-sm text-grey-500 my-1"
+                      >remove</a
+                    >
+
+                    {% comment %} /cart/change?line=1&quantity=0 {% endcomment %}
+
+                    {% if item.variant.title != 'Default Title' %}
+                      <p class="text-sm text-gray-600">{{ item.variant.title }}</p>
+                    {% endif %}
+                    {% if item.properties.size > 0 %}
+                      <div class="mt-1">
+                        {% for p in item.properties %}
+                          {% if p.last != blank and p.first != '_gift_card_redeem' and p.first != '_custom_product' %}
+                            <p class="text-sm text-gray-600">{{ p.first }}: {{ p.last }}</p>
+                          {% endif %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </td>
+
+                <td class="py-4">
+                  {{ item.price | money }}
+                </td>
+
+                <td class="py-4">
+                  <input
+                    type="number"
+                    name="updates[]"
+                    id="updates_{{ item.key }}"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    class="w-16 border rounded px-2 py-1"
+                  >
+                </td>
+
+                <td class="py-4">
+                  {{ item.line_price | money }}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="4" class="text-right py-4">
+                <button type="submit" class="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
+                  Update Cart
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="flex flex-col md:flex-row item-center justify-between ">
+          <div class="w-full my-4">
+            <label for="cart-note" class="block mb-2 font-medium">Add a note to your order</label>
+            <textarea
+              name="note"
+              id="cart-note"
+              rows="3"
+              class="w-full border rounded px-3 py-2"
+              placeholder="Special instructions for your order"
+            >{{ cart.note }}</textarea>
+          </div>
+          <div class="w-full my-4 md:w-80">
+            {% for block in section.blocks %}
+              {% case block.type %}
+                {% when 'subtotal' %}
+                  <h3 class="text-xl">Subtotal: {{ cart.total_price | money }}</h3>
+
+                {% when 'update_button' %}
+                  <div class="my-2">
+                    <button
+                      type="submit"
+                      name="update"
+                      class="w-full p-3 border border-grey-600 text-gray-600 font-medium hover:bg-grey-600 hover:text-green"
+                    >
+                      Up
+                    </button>
+                  </div>
+
+                {% when 'checkout_button' %}
+                  <div class="my-2">
+                    <button
+                      type="submit"
+                      name="checkout"
+                      class="w-full p-3 border border-gray-600 font-medium bg-grey-600 text-blue"
+                    >
+                      checkout
+                    </button>
+                  </div>
+
+                {% else %}
+
+              {% endcase %}
+            {% endfor %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% else %}
+  <div class="max-w-6xl h-60 mx-auto my-4 flex items-center justify-center">
+    <div class="text-center">
+      <h2 class="text-2xl font-semibold mb-4">Your cart is currently empty.</h2>
+      <div class="my-4 py-4">
+        <a
+          href="{{ routes.all_products_collection_url }}"
+          class="px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
+          >Continue Shopping</a
+        >
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Cart Box",
+  "settings": [],
+  "blocks": [
+    { "type": "subtotal", "name": "Subtotal", "limit": 1 },
+    { "type": "update_button", "name": "Update button", "limit": 1 },
+    { "type": "checkout_button", "name": "Checkout button", "limit": 1 }
+  ]
+}
+{% endschema %}
