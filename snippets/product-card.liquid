@@ -1,0 +1,20 @@
+<div class="border p-4">
+  {% if product_prodcuts.featured_image %}
+    <img
+      src="{{ product_prodcuts.featured_image | img_url: 'medium' }}"
+      alt="{{ product_prodcuts.title }}"
+      class="w-full h-auto mb-4 transition duration-1000 ease-in-out hover:scale-115 transform"
+    >
+
+  {% else %}
+    {{ 'product-3' | placeholder_svg_tag: 'medium' }}
+  {% endif %}
+
+  <span class="text-sm text-gray-600">{{ product_prodcuts.vendor }}</span>
+
+  <a href="{{ product_prodcuts.url }}">
+    <h2 class="text-lg font-semibold">{{ product_prodcuts.title }}</h2>
+  </a>
+
+  <p class="text-base font-medium">{{ product_prodcuts.price | money }}</p>
+</div>
